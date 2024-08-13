@@ -2,7 +2,7 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.32310.304
-MinimumVisualStudioVersion = 10.0.40219.1
+MinimumVisualStudioVersion = 15
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Stockfish", "Stockfish.vcxproj", "{11D755B4-6922-44F6-B71C-1713F256EDF9}"
 EndProject
 Global
