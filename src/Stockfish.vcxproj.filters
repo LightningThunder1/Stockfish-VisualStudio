@@ -15,6 +15,7 @@
     <ClInclude Include="thread_win32.h" />
     <ClInclude Include="timeman.h" />
     <ClInclude Include="tt.h" />
+    <ClInclude Include="tune.h" />
     <ClInclude Include="types.h" />
     <ClInclude Include="uci.h" />
     <ClInclude Include="syzygy\tbprobe.h">
@@ -39,6 +40,7 @@
     <ClCompile Include="thread.cpp" />
     <ClCompile Include="timeman.cpp" />
     <ClCompile Include="tt.cpp" />
+    <ClCompile Include="tune.cpp" />
     <ClCompile Include="uci.cpp" />
     <ClCompile Include="ucioption.cpp" />
     <ClCompile Include="syzygy\tbprobe.cpp">
