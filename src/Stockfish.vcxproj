@@ -168,6 +168,7 @@
     <ClInclude Include="movepick.h" />
     <ClInclude Include="pawns.h" />
     <ClInclude Include="position.h" />
+    <ClInclude Include="psqt.h" />    
     <ClInclude Include="search.h" />
     <ClInclude Include="thread.h" />
     <ClInclude Include="thread_win32.h" />
