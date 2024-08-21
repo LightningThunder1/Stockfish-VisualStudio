@@ -1,8 +1,9 @@
 /*
+  # Jan 3rd, 2023, 5:07am (File version)
+  # July 12th, 2023, 6:55am (Current Stockfish version)
+  #
   Stockfish, a UCI chess playing engine derived from Glaurung 2.1
-  Copyright (C) 2004-2008 Tord Romstad (Glaurung author)
-  Copyright (C) 2008-2015 Marco Costalba, Joona Kiiski, Tord Romstad
-  Copyright (C) 2015-2020 Marco Costalba, Joona Kiiski, Gary Linscott, Tord Romstad
+  Copyright (C) 2004-2023 The Stockfish developers (see AUTHORS file)
 
   Stockfish is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -68,7 +69,6 @@ namespace {
 
 } // namespace
 
-
 bool Bitbases::probe(Square wksq, Square wpsq, Square bksq, Color stm) {
 
   assert(file_of(wpsq) <= FILE_D);
@@ -97,7 +97,6 @@ void Bitbases::init() {
       if (db[idx] == WIN)
           KPKBitbase.set(idx);
 }
-
 
 namespace {
 
@@ -152,8 +151,8 @@ namespace {
     Bitboard b = attacks_bb<KING>(ksq[stm]);
 
     while (b)
-        r |= stm == WHITE ? db[index(BLACK, ksq[BLACK] , pop_lsb(&b), psq)]
-                          : db[index(WHITE, pop_lsb(&b),  ksq[WHITE], psq)];
+        r |= stm == WHITE ? db[index(BLACK, ksq[BLACK], pop_lsb(b), psq)]
+                          : db[index(WHITE, pop_lsb(b), ksq[WHITE], psq)];
 
     if (stm == WHITE)
     {
