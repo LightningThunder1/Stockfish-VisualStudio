@@ -1,8 +1,9 @@
 /*
+  # February 27th, 2023, 6:29pm (LAST File version)
+  # July 12th, 2023, 1:04am (DELETED FROM STOCKFISH)
+  
   Stockfish, a UCI chess playing engine derived from Glaurung 2.1
-  Copyright (C) 2004-2008 Tord Romstad (Glaurung author)
-  Copyright (C) 2008-2015 Marco Costalba, Joona Kiiski, Tord Romstad
-  Copyright (C) 2015-2020 Marco Costalba, Joona Kiiski, Gary Linscott, Tord Romstad
+  Copyright (C) 2004-2023 The Stockfish developers (see AUTHORS file)
 
   Stockfish is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -30,7 +31,7 @@ namespace Material {
 
 /// Material::Entry contains various information about a material configuration.
 /// It contains a material imbalance evaluation, a function pointer to a special
-/// endgame evaluation function (which in most cases is NULL, meaning that the
+/// endgame evaluation function (which in most cases is nullptr, meaning that the
 /// standard evaluation function will be used), and scale factors.
 ///
 /// The scale factors are used to scale the evaluation score up or down. For
@@ -39,8 +40,8 @@ namespace Material {
 
 struct Entry {
 
-  Score imbalance() const { return make_score(value, value); }
-  Phase game_phase() const { return gamePhase; }
+  Score imbalance() const { return score; }
+  Phase game_phase() const { return (Phase)gamePhase; }
   bool specialized_eval_exists() const { return evaluationFunction != nullptr; }
   Value evaluate(const Position& pos) const { return (*evaluationFunction)(pos); }
 
@@ -59,12 +60,12 @@ struct Entry {
   const EndgameBase<Value>* evaluationFunction;
   const EndgameBase<ScaleFactor>* scalingFunction[COLOR_NB]; // Could be one for each
                                                              // side (e.g. KPKP, KBPsK)
-  int16_t value;
+  Score score;
+  int16_t gamePhase;
   uint8_t factor[COLOR_NB];
-  Phase gamePhase;
 };
 
-typedef HashTable<Entry, 8192> Table;
+using Table = HashTable<Entry, 8192>;
 
 Entry* probe(const Position& pos);
 
