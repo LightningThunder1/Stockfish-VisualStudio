@@ -159,6 +159,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="benchmark.h" />
     <ClInclude Include="bitboard.h" />
     <ClInclude Include="endgame.h" />
     <ClInclude Include="evaluate.h" />
