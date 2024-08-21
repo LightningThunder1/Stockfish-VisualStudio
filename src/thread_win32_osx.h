@@ -1,8 +1,9 @@
 /*
+  # Jan 10th, 2023, 6:25am (File version)
+  # July 12th, 2023, 6:55am (Current Stockfish version)
+  #
   Stockfish, a UCI chess playing engine derived from Glaurung 2.1
-  Copyright (C) 2004-2008 Tord Romstad (Glaurung author)
-  Copyright (C) 2008-2015 Marco Costalba, Joona Kiiski, Tord Romstad
-  Copyright (C) 2015-2020 Marco Costalba, Joona Kiiski, Gary Linscott, Tord Romstad
+  Copyright (C) 2004-2023 The Stockfish developers (see AUTHORS file)
 
   Stockfish is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -29,7 +30,7 @@
 /// The implementation calls pthread_create() with the stack size parameter
 /// equal to the linux 8MB default, on platforms that support it.
 
-#if defined(__APPLE__) || defined(__MINGW32__) || defined(__MINGW64__)
+#if defined(__APPLE__) || defined(__MINGW32__) || defined(__MINGW64__) || defined(USE_PTHREADS)
 
 #include <pthread.h>
 
@@ -41,7 +42,7 @@ void* start_routine(void* ptr)
    P* p = reinterpret_cast<P*>(ptr);
    (p->first->*(p->second))(); // Call member function pointer
    delete p;
-   return NULL;
+   return nullptr;
 }
 
 class NativeThread {
@@ -56,12 +57,12 @@ public:
     pthread_attr_setstacksize(attr, TH_STACK_SIZE);
     pthread_create(&thread, attr, start_routine<T>, new P(obj, fun));
   }
-  void join() { pthread_join(thread, NULL); }
+  void join() { pthread_join(thread, nullptr); }
 };
 
 #else // Default case: use STL classes
 
-typedef std::thread NativeThread;
+using NativeThread = std::thread;
 
 #endif
 
