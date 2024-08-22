@@ -1,9 +1,9 @@
 /*
-  # Mar 20th, 2021, 6:28am (File version)
-  # July 12th, 2023, 6:55am (Current Stockfish version)
-  #
+  # Jan 7th, 2022, 1:45am (File version)
+  # Jan 7th, 2022, 1:45am (Current Stockfish version)
+
   Stockfish, a UCI chess playing engine derived from Glaurung 2.1
-  Copyright (C) 2004-2021 The Stockfish developers (see AUTHORS file)
+  Copyright (C) 2004-2022 The Stockfish developers (see AUTHORS file)
 
   Stockfish is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -26,19 +26,21 @@
 
 #include "types.h"
 
+namespace Stockfish {
+
 namespace Bitbases {
 
 void init();
 bool probe(Square wksq, Square wpsq, Square bksq, Color us);
 
-}
+} // namespace Stockfish::Bitbases
 
 namespace Bitboards {
 
 void init();
 std::string pretty(Bitboard b);
 
-}
+} // namespace Stockfish::Bitboards
 
 constexpr Bitboard AllSquares = ~Bitboard(0);
 constexpr Bitboard DarkSquares = 0xAA55AA55AA55AA55ULL;
@@ -213,6 +215,7 @@ constexpr Bitboard adjacent_files_bb(Square s) {
 inline Bitboard line_bb(Square s1, Square s2) {
 
   assert(is_ok(s1) && is_ok(s2));
+
   return LineBB[s1][s2];
 }
 
@@ -226,7 +229,9 @@ inline Bitboard line_bb(Square s1, Square s2) {
 /// interpose itself to cover the check or capture the checking piece.
 
 inline Bitboard between_bb(Square s1, Square s2) {
+
   assert(is_ok(s1) && is_ok(s2));
+
   return BetweenBB[s1][s2];
 }
 
@@ -443,5 +448,7 @@ inline Square frontmost_sq(Color c, Bitboard b) {
   assert(b);
   return c == WHITE ? msb(b) : lsb(b);
 }
+
+} // namespace Stockfish
 
 #endif // #ifndef BITBOARD_H_INCLUDED
