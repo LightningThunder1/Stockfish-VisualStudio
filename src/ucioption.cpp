@@ -1,23 +1,23 @@
-  /*
-    # Jan 9th, 2021, 3:04am (File version)
-    # ????? (Current Stockfish version)
-    #
-    Stockfish, a UCI chess playing engine derived from Glaurung 2.1
-    Copyright (C) 2004-2021 The Stockfish developers (see AUTHORS file)
+/*
+  # Jan 7th, 2022, 1:45am (File version)
+  # Jan 7th, 2022, 1:45am (Current Stockfish version)
 
-    Stockfish is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+  Stockfish, a UCI chess playing engine derived from Glaurung 2.1
+  Copyright (C) 2004-2022 The Stockfish developers (see AUTHORS file)
 
-    Stockfish is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+  Stockfish is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
 
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-  */
+  Stockfish is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 
 #include <algorithm>
 #include <cassert>
@@ -33,6 +33,8 @@
 #include "syzygy/tbprobe.h"
 
 using std::string;
+
+namespace Stockfish {
 
 UCI::OptionsMap Options; // Global object
 
@@ -60,8 +62,6 @@ void init(OptionsMap& o) {
   constexpr int MaxHashMB = Is64Bit ? 33554432 : 2048;
 
   o["Debug Log File"]        << Option("", on_logger);
-  o["Contempt"]              << Option(24, -100, 100);
-  o["Analysis Contempt"]     << Option("Both var Off var White var Black var Both", "Both");
   o["Threads"]               << Option(1, 1, 512, on_threads);
   o["Hash"]                  << Option(16, 1, MaxHashMB, on_hash_size);
   o["Clear Hash"]            << Option(on_clear_hash);
@@ -81,6 +81,7 @@ void init(OptionsMap& o) {
   o["Syzygy50MoveRule"]      << Option(true);
   o["SyzygyProbeLimit"]      << Option(7, 0, 7);
 }
+
 
 /// operator<<() is used to print all the options default values in chronological
 /// insertion order (the idx field) and in the format defined by the UCI protocol.
@@ -162,7 +163,7 @@ Option& Option::operator=(const string& v) {
 
   assert(!type.empty());
 
-  if (   (type != "button" && v.empty())
+  if (   (type != "button" && type != "string" && v.empty())
       || (type == "check" && v != "true" && v != "false")
       || (type == "spin" && (stof(v) < min || stof(v) > max)))
       return *this;
@@ -188,3 +189,5 @@ Option& Option::operator=(const string& v) {
 }
 
 } // namespace UCI
+
+} // namespace Stockfish
