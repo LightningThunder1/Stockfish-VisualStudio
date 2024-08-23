@@ -1,9 +1,9 @@
 /*
-  # Jan 7th, 2022, 1:45am (File version)
-  # Jan 7th, 2022, 1:45am (Current Stockfish version)
+  # Jan 3rd, 2023, 5:07am (File version)
+  # Jan 3rd, 2023, 5:07am (Current Stockfish version)
 
   Stockfish, a UCI chess playing engine derived from Glaurung 2.1
-  Copyright (C) 2004-2022 The Stockfish developers (see AUTHORS file)
+  Copyright (C) 2004-2023 The Stockfish developers (see AUTHORS file)
 
   Stockfish is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -116,12 +116,12 @@ public:
   Bitboard attackers_to(Square s) const;
   Bitboard attackers_to(Square s, Bitboard occupied) const;
   Bitboard slider_blockers(Bitboard sliders, Square s, Bitboard& pinners) const;
+  template<PieceType Pt> Bitboard attacks_by(Color c) const;
 
   // Properties of moves
   bool legal(Move m) const;
   bool pseudo_legal(const Move m) const;
   bool capture(Move m) const;
-  bool capture_or_promotion(Move m) const;
   bool gives_check(Move m) const;
   Piece moved_piece(Move m) const;
   Piece captured_piece() const;
@@ -157,6 +157,7 @@ public:
   bool has_repeated() const;
   int rule50_count() const;
   Score psq_score() const;
+  Value psq_eg_stm() const;
   Value non_pawn_material(Color c) const;
   Value non_pawn_material() const;
 
@@ -177,6 +178,8 @@ private:
   void move_piece(Square from, Square to);
   template<bool Do>
   void do_castling(Color us, Square from, Square& to, Square& rfrom, Square& rto);
+  template<bool AfterMove>
+  Key adjust_key50(Key k) const;
 
   // Data members
   Piece board[SQUARE_NB];
@@ -194,7 +197,7 @@ private:
   bool chess960;
 };
 
-extern std::ostream& operator<<(std::ostream& os, const Position& pos);
+std::ostream& operator<<(std::ostream& os, const Position& pos);
 
 inline Color Position::side_to_move() const {
   return sideToMove;
@@ -278,6 +281,22 @@ inline Bitboard Position::attackers_to(Square s) const {
   return attackers_to(s, pieces());
 }
 
+template<PieceType Pt>
+inline Bitboard Position::attacks_by(Color c) const {
+
+  if constexpr (Pt == PAWN)
+      return c == WHITE ? pawn_attacks_bb<WHITE>(pieces(WHITE, PAWN))
+                        : pawn_attacks_bb<BLACK>(pieces(BLACK, PAWN));
+  else
+  {
+      Bitboard threats = 0;
+      Bitboard attackers = pieces(c, Pt);
+      while (attackers)
+          threats |= attacks_bb<Pt>(pop_lsb(attackers), pieces());
+      return threats;
+  }
+}
+
 inline Bitboard Position::checkers() const {
   return st->checkersBB;
 }
@@ -303,8 +322,14 @@ inline int Position::pawns_on_same_color_squares(Color c, Square s) const {
 }
 
 inline Key Position::key() const {
-  return st->rule50 < 14 ? st->key
-                         : st->key ^ make_key((st->rule50 - 14) / 8);
+  return adjust_key50<false>(st->key);
+}
+
+template<bool AfterMove>
+inline Key Position::adjust_key50(Key k) const
+{
+  return st->rule50 < 14 - AfterMove
+      ? k : k ^ make_key((st->rule50 - (14 - AfterMove)) / 8);
 }
 
 inline Key Position::pawn_key() const {
@@ -317,6 +342,10 @@ inline Key Position::material_key() const {
 
 inline Score Position::psq_score() const {
   return psq;
+}
+
+inline Value Position::psq_eg_stm() const {
+  return (sideToMove == WHITE ? 1 : -1) * eg_value(psq);
 }
 
 inline Value Position::non_pawn_material(Color c) const {
@@ -343,11 +372,6 @@ inline bool Position::opposite_bishops() const {
 
 inline bool Position::is_chess960() const {
   return chess960;
-}
-
-inline bool Position::capture_or_promotion(Move m) const {
-  assert(is_ok(m));
-  return type_of(m) != NORMAL ? type_of(m) != CASTLING : !empty(to_sq(m));
 }
 
 inline bool Position::capture(Move m) const {
