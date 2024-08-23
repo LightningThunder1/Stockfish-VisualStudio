@@ -1,9 +1,9 @@
 /*
-  # Jan 7th, 2022, 1:45am (File version)
-  # Jan 7th, 2022, 1:45am (Current Stockfish version)
+  # Jan 3rd, 2023, 5:07am (File version)
+  # Jan 3rd, 2023, 5:07am (Current Stockfish version)
 
   Stockfish, a UCI chess playing engine derived from Glaurung 2.1
-  Copyright (C) 2004-2022 The Stockfish developers (see AUTHORS file)
+  Copyright (C) 2004-2023 The Stockfish developers (see AUTHORS file)
 
   Stockfish is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -34,9 +34,6 @@ class Position;
 
 namespace Search {
 
-/// Threshold used for countermoves based pruning
-constexpr int CounterMovePruneThreshold = 0;
-
 
 /// Stack struct keeps track of the information we need to remember from nodes
 /// shallower and deeper in the tree during the search. Each search thread has
@@ -50,13 +47,13 @@ struct Stack {
   Move excludedMove;
   Move killers[2];
   Value staticEval;
-  Depth depth;
   int statScore;
   int moveCount;
   bool inCheck;
   bool ttPv;
   bool ttHit;
   int doubleExtensions;
+  int cutoffCnt;
 };
 
 
@@ -77,6 +74,9 @@ struct RootMove {
   Value score = -VALUE_INFINITE;
   Value previousScore = -VALUE_INFINITE;
   Value averageScore = -VALUE_INFINITE;
+  Value uciScore = -VALUE_INFINITE;
+  bool scoreLowerbound = false;
+  bool scoreUpperbound = false;
   int selDepth = 0;
   int tbRank = 0;
   Value tbScore;
