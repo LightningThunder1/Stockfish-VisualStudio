@@ -1,9 +1,9 @@
 /*
-  # Jan 7th, 2022, 1:45am (File version)
-  # Jan 7th, 2022, 1:45am (Current Stockfish version)
+  # Jan 3rd, 2023, 5:07am (File version)
+  # Jan 3rd, 2023, 5:07am (Current Stockfish version)
 
   Stockfish, a UCI chess playing engine derived from Glaurung 2.1
-  Copyright (C) 2004-2022 The Stockfish developers (see AUTHORS file)
+  Copyright (C) 2004-2023 The Stockfish developers (see AUTHORS file)
 
   Stockfish is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -176,11 +176,6 @@ enum Bound {
   BOUND_EXACT = BOUND_UPPER | BOUND_LOWER
 };
 
-enum ExplosionState {
-  EXPLOSION_NONE,
-  MUST_CALM_DOWN
-};
-
 enum Value : int {
   VALUE_ZERO      = 0,
   VALUE_DRAW      = 0,
@@ -194,6 +189,9 @@ enum Value : int {
   VALUE_MATE_IN_MAX_PLY  =  VALUE_MATE - MAX_PLY,
   VALUE_MATED_IN_MAX_PLY = -VALUE_MATE_IN_MAX_PLY,
 
+  // In the code, we make the assumption that these values
+  // are such that non_pawn_material() can be used to uniquely
+  // identify the material on the board.
   PawnValueMg   = 126,   PawnValueEg   = 208,
   KnightValueMg = 781,   KnightValueEg = 854,
   BishopValueMg = 825,   BishopValueEg = 915,
@@ -442,7 +440,7 @@ constexpr Square to_sq(Move m) {
 }
 
 constexpr int from_to(Move m) {
- return m & 0xFFF;
+  return m & 0xFFF;
 }
 
 constexpr MoveType type_of(Move m) {
