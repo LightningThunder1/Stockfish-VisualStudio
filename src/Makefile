@@ -41,11 +41,11 @@ else ifeq ($(COMP),mingw)
 endif
 
 ### Executable name
-ifeq ($(target_windows),yes)
-	EXE = stockfish.exe
-else
-	EXE = stockfish
-endif
+# ifeq ($(target_windows),yes)
+#	EXE = stockfish.exe
+# else
+#	EXE = stockfish
+# endif
 
 ### Installation dir definitions
 PREFIX = /usr/local
@@ -761,6 +761,9 @@ endif
 ### Section 4. Public Targets
 ### ==========================================================================
 
+build: config-sanity
+
+	$(MAKE) ARCH=$(ARCH) COMP=$(COMP) all
 
 help:
 	@echo ""
@@ -840,9 +843,6 @@ endif
 	icx-profile-use icx-profile-make \
 	gcc-profile-use gcc-profile-make \
 	clang-profile-use clang-profile-make FORCE
-
-build: config-sanity
-	$(MAKE) ARCH=$(ARCH) COMP=$(COMP) all
 
 profile-build: config-sanity objclean profileclean
 	@echo ""
